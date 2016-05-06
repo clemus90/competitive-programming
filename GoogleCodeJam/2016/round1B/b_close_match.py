@@ -1,116 +1,114 @@
+def bestScores(cod, jam):
+    size = len(cod) #same as jam
+    if size == 0:
+        return '','',0
+    if size == 1:
+        if cod == '?' and jam == '?':
+            return '0', '0', 0
+        elif cod == '?' and jam != '?':
+            return jam, jam, 0
+        elif cod != '?' and jam == '?':
+            return cod, cod, 0
+        elif cod != '?' and jam != '?':
+            return cod, jam, absDifference(cod,jam)
+
+    for i in xrange(size):
+        if cod[i] == '?' and jam[i] == '?':
+            #both 0
+            bestSoFar = None
+            codPrefix = cod[:i]
+            jamPrefix = jam[:i]
+            codSufix, jamSufix, bestSoFar = bestScores(cod[i+1:], jam[i+1:])
+            codCurrent, jamCurrent = codPrefix + '0' + codSufix, jamPrefix + '0' + jamSufix
+            #cod 0 jam 1
+            codSufix, jamSufix = maxScore(cod[i+1:]), minScore(jam[i+1:])
+            tempDiff = absDifference(codSufix, '1'+jamSufix)
+            if tempDiff < bestSoFar:
+                bestSoFar = tempDiff
+                codCurrent, jamCurrent = codPrefix + '0' + codSufix, jamPrefix + '1' + jamSufix
+            #cod 1 jam 0
+            codSufix, jamSufix = minScore(cod[i+1:]), maxScore(jam[i+1:])
+            tempDiff = absDifference('1'+codSufix, jamSufix)
+            if tempDiff < bestSoFar:
+                bestSoFar = tempDiff
+                codCurrent, jamCurrent = codPrefix + '1' + codSufix, jamPrefix + '0' + jamSufix
+            return codCurrent, jamCurrent, bestSoFar
+
+        elif cod[i] == '?' and jam[i] != '?':
+            bestSoFar = None
+            codPrefix = cod[:i]
+            jamPrefix = jam[:i]
+            #cod = jam - 1
+            if(jam[i]!='0'):
+                codSufix, jamSufix = maxScore(cod[i+1:]), minScore(jam[i+1:])
+                bestSoFar = absDifference(codSufix, '1'+jamSufix)
+                codCurrent, jamCurrent = codPrefix + str(int(jam[i]) - 1) + codSufix, jamPrefix + jam[i] + jamSufix
+
+            #cod = jam
+            codSufix, jamSufix, tempDiff = bestScores(cod[i+1:], jam[i+1:])
+            if bestSoFar==None or tempDiff < bestSoFar:
+                bestSoFar = tempDiff
+                codCurrent, jamCurrent = codPrefix + jam[i] + codSufix, jamPrefix + jam[i] + jamSufix
+
+            #cod = jam + 1
+            if(jam[i]!='9'):
+                codSufix, jamSufix = minScore(cod[i+1:]), maxScore(jam[i+1:])
+                tempDiff = absDifference('1'+codSufix, jamSufix)
+                if tempDiff < bestSoFar:
+                    bestSoFar = tempDiff
+                    codCurrent, jamCurrent = codPrefix + str(int(jam[i]) + 1) + codSufix, jamPrefix + jam[i] + jamSufix
+            return codCurrent, jamCurrent, bestSoFar
+
+        elif cod[i] != '?' and jam[i] == '?':
+            bestSoFar = None
+            codPrefix = cod[:i]
+            jamPrefix = jam[:i]
+            #jam = cod - 1
+            if(cod[i]!='0'):
+                codSufix, jamSufix = minScore(cod[i+1:]), maxScore(jam[i+1:])
+                bestSoFar = absDifference('1'+codSufix, jamSufix)
+                codCurrent, jamCurrent = codPrefix + cod[i] + codSufix, jamPrefix + str(int(cod[i]) - 1) + jamSufix
+
+            #jam = cod
+            codSufix, jamSufix, tempDiff = bestScores(cod[i+1:], jam[i+1:])
+            if bestSoFar==None or tempDiff < bestSoFar:
+                bestSoFar = tempDiff
+                codCurrent, jamCurrent = codPrefix + cod[i] + codSufix, jamPrefix + cod[i] + jamSufix
+            #jam = cod + 1
+            if(cod[i]!='9'):
+                codSufix, jamSufix = maxScore(cod[i+1:]), minScore(jam[i+1:])
+                tempDiff = absDifference(codSufix, '1'+jamSufix)
+                if tempDiff < bestSoFar:
+                    bestSoFar = tempDiff
+                    codCurrent, jamCurrent = codPrefix + cod[i] + codSufix, jamPrefix + str(int(cod[i])+1) + jamSufix
+            return codCurrent, jamCurrent, bestSoFar
+
+        elif cod[i] != '?' and jam[i] != '?' and cod[i] != jam[i]:
+            if int(cod[i]) > int(jam[i]):
+                codCurrent = cod[:i+1] + minScore(cod[i+1:])
+                jamCurrent = jam[:i+1] + maxScore(jam[i+1:])
+            else:
+                codCurrent = cod[:i+1] + maxScore(cod[i+1:])
+                jamCurrent = jam[:i+1] + minScore(jam[i+1:])
+            return codCurrent, jamCurrent, absDifference(codCurrent,jamCurrent)
+    return cod, jam, 0
+
+def absDifference(cod, jam): 
+    if len(cod) == 0 and len(jam)==0:
+        return 0
+    if (len(cod) == 1 and len(jam) == 0) or (len(cod)==0 and len(jam)==1):
+        return 10
+    return abs(int(cod) - int(jam))
+
+def maxScore(score):
+    return score.replace('?','9')
+
+def minScore(score):
+    return score.replace('?','0')
+
 t = int(raw_input())
-
-prev_calc = {}
-
-def minimize_abs(coders, jammers):
-    #base
-    if(len(coders) == 1):
-        if coders[0] != '?' and jammers[0] != '?':
-            return coders, jammers, abs_diff(coders, jammers)
-        elif coders[0] == '?' and jammers[0] != '?':
-            return jammers, jammers, 0
-        elif coders[0] != '?' and jammers[0] == '?':
-            return coders, coders, 0
-        else:
-            return ['0'], ['0'], 0
-    #remember
-    if (tuple(coders),tuple(jammers)) in prev_calc:
-        return prev_calc[(tuple(coders),tuple(jammers))]
-    #recursive
-    rem_coders = coders[1:]
-    rem_jammers = jammers[1:]
-    maxC, minC, maxJ, minJ = maximize(rem_coders), minimize(rem_coders), maximize(rem_jammers), minimize(rem_jammers)
-
-    if coders[0] == '?' and jammers[0] == '?':
-        posibles = []
-        #both 0
-        temp = minimize_abs(rem_coders, rem_jammers)
-        posibles.append((['0'] + temp[0], ['0'] + temp[1], temp[2]))
-
-        #C0 = 0 and J0 = 1
-        posibles.append((['0']+ maxC, ['1']+minJ, abs_diff(maxC, ['1'] + minJ)))
-        #C0 = 1 and J0 = 0
-        posibles.append((['1']+ minC, ['0']+maxJ, abs_diff(['1']+minC, maxJ)))
-        minimum = min(*[z for x,y,z in posibles])
-        for pos in posibles:
-            if pos[2] == minimum:
-                prev_calc[(tuple(coders),tuple(jammers))] = pos
-                return pos
-
-    if coders[0] == '?' and jammers[0] != '?':
-        posibles = []
-        #c = j
-        temp = minimize_abs(rem_coders, rem_jammers)
-        posibles.append(([jammers[0]] + temp[0], [jammers[0]] + temp[1], temp[2]))
-
-        #C0 = J0 - 1
-        posibles.append(([str(int(jammers[0]) -1) ]+ maxC, [jammers[0]]+minJ, abs_diff([str(int(jammers[0]) -1) ]+ maxC, [jammers[0]]+minJ)))
-        #C0 = J0 + 1
-        if jammers[0] != '9':
-            posibles.append(([str(int(jammers[0]) + 1) ] + minC, [jammers[0]]+maxJ, abs_diff([str(int(jammers[0]) + 1) ] + minC, [jammers[0]]+maxJ)))
-        minimum = min(*[z for x,y,z in posibles])
-        for pos in posibles:
-            if pos[2] == minimum:
-                prev_calc[tuple(coders),tuple(jammers)] = pos
-                return pos
-
-    if coders[0] != '?' and jammers[0] == '?':
-        posibles = []
-        #j = c
-        temp = minimize_abs(rem_coders, rem_jammers)
-        posibles.append(([coders[0]] + temp[0], [coders[0]] + temp[1], temp[2]))
-
-        #J = C - 1
-        posibles.append(([coders[0]]+ maxC, [str(int(coders[0])+1)]+minJ, abs_diff([coders[0]]+ maxC, [str(int(coders[0])+1)]+minJ)))
-        #J = C + 1
-        if coders[0] != '9':
-            posibles.append(([coders[0]] + minC, [str(int(coders[0])-1)]+maxJ, abs_diff([coders[0]] + minC, [str(int(coders[0])-1)]+maxJ)))
-        minimum = min(*[z for x,y,z in posibles])
-        for pos in posibles:
-            if pos[2] == minimum:
-                prev_calc[(tuple(coders), tuple(jammers))] = pos
-                return pos
-
-    if coders[0] != '?' and jammers[0] != '?':
-        if coders[0] > jammers[0]:
-            temp = ([coders[0]] +minC, [jammers[0]] + maxJ, abs_diff([coders[0]] + minC, [jammers[0]]+maxJ))
-            prev_calc[(tuple(coders), tuple(jammers))] = temp
-            return temp
-        elif coders[0] < jammers[0]:
-            temp = ([coders[0]] +maxC, [jammers[0]] + minJ, abs_diff([coders[0]] + maxC, [jammers[0]]+minJ))
-            prev_calc[tuple(coders),tuple(jammers)] = temp
-            return temp
-        else:
-            temp = minimize_abs(rem_coders, rem_jammers)
-            prev_calc[tuple(coders),tuple(jammers)] = temp
-            return temp
-
-def maximize(num):
-    num = num[:]
-    for i in xrange(len(num)):
-        if num[i] == '?':
-            num[i] = '9'
-    return num
-
-def minimize(num):
-    num = num[:]
-    for i in xrange(len(num)):
-        if num[i] == '?':
-            num[i] = '0'
-    return num
-
-def abs_diff(num1, num2):
-    val1 = 0
-    val2 = 0
-    for i, x in enumerate(reversed(num1)):
-        val1 += int(x) * (10**i)
-    for i, x in enumerate(reversed(num2)):
-        val2 += int(x) * (10**i)
-    return abs(val1 - val2)
 
 for case in xrange(1, t+1):
     coders, jammers = raw_input().split()
-    coders = [x for x in coders]
-    jammers = [x for x in jammers]
-    coders, jammers, length = minimize_abs(coders, jammers)
-    print "Case #{}: {} {}".format(case, ''.join(coders), ''.join(jammers))
+    coders, jammers, bestDiff = bestScores(coders, jammers)
+    print "Case #{}: {} {}".format(case, coders, jammers)
