@@ -1,2 +1,5 @@
 *.out
 *.in
+
+*.jar
+*.class
