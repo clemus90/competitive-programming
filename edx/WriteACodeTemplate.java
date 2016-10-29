@@ -34,7 +34,8 @@ public class WriteACodeTemplate{
       for(int i=0; i<h; i++){
         String line = in.readLine();
         for(int j=0; j<line.length(); j++){
-          coord[]
+          char c = line.charAt(j);
+          coord[(int)c] = new Point(j,i);
         }
       }
     }
