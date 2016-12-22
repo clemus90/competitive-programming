@@ -1,3 +1,4 @@
+//Accepted
 object Solution extends App{
   val sc = new java.util.Scanner (System.in);
   var n = sc.nextInt();

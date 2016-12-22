@@ -1,5 +1,6 @@
 import scala.util.Sorting
 
+//Some Cases Wrong Answer
 object Solution extends App {
   val sc = new java.util.Scanner (System.in);
   var n = sc.nextInt();
