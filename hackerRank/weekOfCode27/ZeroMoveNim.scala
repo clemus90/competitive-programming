@@ -11,7 +11,7 @@ object Solution extends App {
   for (game <- 1 to g) {
     val n = sc.nextInt()
     var p: Vector[Int] = Vector.empty
-    for(i <- 0 until n){
+    for(i <- 1 to n){
       p = sc.nextInt() +: p
     }
     if(gameOfNimWiner(p, n)) {
