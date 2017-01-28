@@ -1,4 +1,30 @@
+import scala.annotation.tailrec
+
 object PerfectBaseline extends App {
+
+  def median(arr: Array[Int], total: Int):Char = {
+    
+    def search(occurrence: Int): Int = {
+      @tailrec
+      def rec(pos:Int, acum:Int):Int = {
+        if(acum+arr(pos) >= occurrence)pos
+        else rec(pos+1, acum + arr(pos))
+      }
+
+      rec(0,0)
+    }
+
+    var currentTotal = 0
+    val totals = arr.map(x => {
+      currentTotal += x
+      currentTotal
+    })
+
+    if(total % 2 == 1) (search((total/2) + 1) + 'a').toChar
+    else (search(total/2) + 'a').toChar
+
+  }
+
   val in = io.Source.stdin.getLines()
   val tests = in.next.toInt
   for(_ <- 1 to tests){
@@ -9,6 +35,6 @@ object PerfectBaseline extends App {
         letterCount(data._2)(data._1 - 'a') += 1
       })
     }
-    println(letterCount.map(letters => ((letters.reduce(_ + _) / letters.size) + 'a').toChar).mkString(""))
+    println(letterCount.map(median(_, n)).mkString(""))
   }
 }
