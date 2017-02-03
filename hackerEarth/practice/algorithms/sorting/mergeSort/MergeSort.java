@@ -16,7 +16,7 @@ public class MergeSort {
             }
             else if(mi > end){
                 sortedArr[k++] = arr[si++];
-                count += end - mid;
+                
             }
             else if(arr[si] > arr[mi]){
                 sortedArr[k++] = arr[mi++];

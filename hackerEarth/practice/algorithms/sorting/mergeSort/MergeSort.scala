@@ -18,7 +18,6 @@ object MergeSort extends App{
         }
         if(!left.isEmpty){
             result = result ++ left
-            pairsFound += left.size
         }
         if(!right.isEmpty){
             result = result ++ right
