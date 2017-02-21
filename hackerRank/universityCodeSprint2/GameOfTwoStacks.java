@@ -24,14 +24,22 @@ public class GameOfTwoStacks{
             sizeA = Integer.parseInt(st.nextToken());
             sizeB = Integer.parseInt(st.nextToken());
             sum = Long.parseLong(st.nextToken());
-
             st = new StringTokenizer(br.readLine());
+            
             for(int i=1; i<=sizeA; i++){
-                stackA[i] = Long.parseLong(st.nextToken()) + stackA[i-1]; 
+                stackA[i] = Long.parseLong(st.nextToken()) + stackA[i-1];
+                if(stackA[i] > sum){
+                    sizeA = i - 1;
+                    break;
+                }
             }
             st = new StringTokenizer(br.readLine());
             for(int i=1; i<=sizeB; i++){
                 stackB[i] = Long.parseLong(st.nextToken()) + stackB[i-1]; 
+                if(stackB[i] > sum){
+                    sizeB = i - 1;
+                    break;
+                }
             }
 
             int maxScore = sizeA + sizeB;
