@@ -98,8 +98,8 @@ public class ACircleAndASquare{
             for(int j=0; j<canv[i].length; j++){
                 double xRot = Math.cos(theta)*j - Math.sin(theta)*i;
                 double yRot = Math.sin(theta)*j + Math.cos(theta)*i;
-                if ( (xRot >= (minX - 0.5) && xRot <= (maxX + 0.5)) &&
-                    (yRot >= (minY - 0.5) && yRot <= (maxY + 0.5)) ) {
+                if ( (xRot >= (minX) && xRot <= (maxX)) &&
+                    (yRot >= (minY) && yRot <= (maxY)) ) {
                     canv[i][j] = '#';
                 }
             }
