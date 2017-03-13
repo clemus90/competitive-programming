@@ -70,42 +70,7 @@ public class MegaprimeNumbers {
                 }
             }
         }
-        long altCount = 0;
-        for(long candidate=first; candidate<=last; candidate++){
-            long temp = candidate;
-            boolean validCandidate = true;
-            while(temp!=0){
-                int digit = (int)(temp % 10);
-                int[] digits = {2,3,5,7};
-                boolean validDigit = false;
-                for(int i=0; i<digits.length; i++){
-                    if(digit == digits[i]){
-                        validDigit = true;
-                        break;
-                    }
-                }
-                if(!validDigit){
-                    validCandidate = false;
-                    break;
-                }
-                temp /= 10;
-            }
-            if(!validCandidate) continue;
-
-            boolean prime = true;
-            for(int i=0; primes.get(i) * primes.get(i) <= candidate; i++){
-                if(candidate % primes.get(i) == 0){
-                    prime = false;
-                    break;
-                }
-            }
-            if(prime){
-                altCount++;
-            }
-        }
-
         out.println(countPrimes);
-        out.println(altCount);
 
         out.close();
     }
@@ -157,6 +122,7 @@ class MegaPrimeCandidate implements Iterator<Long> {
             }
             if(!correct){
                 digit = oneDigitPrimes[0];
+                transformed = true;
                 carry = true;
             }else{
                 carry = false;

@@ -16,10 +16,7 @@ public class ACircleAndASquare{
         for(int i=1; i<=r; i++){
             for(int j=1; j<=r; j++){
                 double distance = Math.sqrt(i*i + j*j);
-                double ratio = r / distance;
-                double rx = (i * ratio);
-                double ry = (j * ratio);
-                if(i <= rx && j <= ry){
+                if(distance <= r){
                     filling[r+j][r+i] = '#';
                     filling[r-j][r-i] = '#';
                     filling[r+j][r-i] = '#';
