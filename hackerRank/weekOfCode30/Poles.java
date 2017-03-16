@@ -30,23 +30,12 @@ public class Poles {
                     costAddingToLastStack += best[j-1][i].cost;
                     long costCreatingStackInplace = best[j-1][i-1].cost;
                     if(costAddingToLastStack <= costCreatingStackInplace){
-                        best[j][i] = new BestItem(costAddingToLastStack , best[j][i-1].stackPos);
+                        best[j][i] = new BestItem(costAddingToLastStack , best[j-1][i].stackPos);
                     }else{
                         best[j][i] = new BestItem(costCreatingStackInplace , altitudes[j]);
                     }
                 }
             }
-        }
-
-        for(int i=1; i<=n; i++){
-            for(int j=1; j<=k; j++){
-                if(best[i][j] == null){
-                    System.out.print("-");
-                }else{
-                    System.out.print("c "+best[i][j].cost + " s "+ best[i][j].stackPos + " ");
-                }
-            }
-            System.out.println();
         }
 
         System.out.println(best[n][k].cost);
